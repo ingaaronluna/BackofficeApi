@@ -51,6 +51,9 @@ dotnet ef migrations add Inicial
 dotnet ef database update
 ```
 
+Si falla usar:
+`dotnet ef database update --connection "Server=127.0.0.1;Port=3306;Database=backoffice_db;Uid=backoffice_user;Password=TUCLAVE;SslMode=none"`
+
 ### Para revisar la base de datos por linea de comando 
 
 ```
@@ -63,8 +66,9 @@ SHOW CREATE TABLE Productos;
 
 Listar `dotnet user-secrets list`
 
-Vuelve a guardarlo 
+Vuelve a guardarlo en Mac
 ```
 dotnet user-secrets remove "ConnectionStrings:DefaultConnection"
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Port=3306;Database=backoffice_db;User=backoffice_user;Password=TuClave"
 ```
+

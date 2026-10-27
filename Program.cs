@@ -8,7 +8,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("Falta la cadena de conexión DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(
+        connectionString,
+        new MySqlServerVersion(new Version(8, 0, 36)))); // Deben colocar la version de MySQL que tengan instalada en su máquina
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
