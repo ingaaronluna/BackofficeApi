@@ -16,22 +16,41 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<CategoriaDto>> Listar()
+    public async Task<ActionResult<IEnumerable<CategoriaDto>>> Listar()
     {
-        return Ok(_service.Listar());
+        return Ok(await _service.ListarAsync());
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<CategoriaDto> ObtenerPorId(int id)
+    public async Task<ActionResult<CategoriaDto>> ObtenerPorId(int id)
     {
-        var categoria = _service.ObtenerPorId(id);
+        var categoria = await _service.ObtenerPorIdAsync(id);
         return categoria is null ? NotFound() : Ok(categoria);
     }
 
     [HttpPost]
-    public ActionResult<CategoriaDto> Crear(CategoriaCrearDto dto)
+    public async Task<ActionResult<CategoriaDto>> Crear(CategoriaCrearDto dto)
     {
-        var creada = _service.Crear(dto);
+        var creada = await _service.CrearAsync(dto);
         return CreatedAtAction(nameof(ObtenerPorId), new { id = creada.Id }, creada);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Actualizar(int id, CategoriaCrearDto dto)
+    {
+        var actualizada = await _service.ActualizarAsync(id, dto);
+        return actualizada ? NoContent() : NotFound();
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Eliminar(int id)
+    {
+        var resultado = await _service.EliminarAsync(id);
+        return resultado switch
+        {
+            ResultadoEliminacion.Eliminada => NoContent(),
+            ResultadoEliminacion.TieneProductos => Conflict(new { mensaje = "La categoría tiene productos asociados" }),
+            _ => NotFound()
+        };
     }
 }
