@@ -1,6 +1,8 @@
 using BackofficeApi.Data;
 using BackofficeApi.Services;
+using BackofficeApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 
