@@ -39,6 +39,22 @@ dotnet user-secrets init
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Port=3306;Database=backoffice_db;User=backoffice_user;Password=SU_CLAVE"
 dotnet user-secrets list
 ```
+### Generar la clave y guardarla en Secret Manager 
+La clave debe ser de 32 bytes (256 bits), aleatoria, en Base64. Cada estudiante genera la suya.
+
+Windows (PowerShell):
+```
+$bytes = New-Object byte[] 32
+[System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+[Convert]::ToBase64String($bytes)
+```
+macOS y Linux:
+```
+openssl rand -base64 32
+```
+
+Para guardar el secret correr `dotnet user-secrets set "Cifrado:Clave" "PEGA_AQUI_LA_CLAVE_32_bytes"`
+
 ## Debemos crear la base de datos con EF
 
 Instalar: `dotnet tool install --global dotnet-ef --version 9.0.0`

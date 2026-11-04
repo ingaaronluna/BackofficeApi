@@ -12,7 +12,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         connectionString,
-        new MySqlServerVersion(new Version(8, 0, 36)))); // Deben colocar la version de MySQL que tengan instalada en su máquina
+        new MySqlServerVersion(new Version(8, 0, 36)),
+        mySqlOptions => mySqlOptions.EnableRetryOnFailure())); // Deben colocar la version de MySQL que tengan instalada en su máquina
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -20,6 +21,7 @@ builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddSingleton<ICifradoService, CifradoService>();
 
 var app = builder.Build();
 

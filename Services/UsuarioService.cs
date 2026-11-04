@@ -11,10 +11,13 @@ public class UsuarioService : IUsuarioService
     private readonly AppDbContext _db;
     private readonly IPasswordHasher<Usuario> _hasher;
 
-    public UsuarioService(AppDbContext db, IPasswordHasher<Usuario> hasher)
+    private readonly ICifradoService _cifrado;
+
+    public UsuarioService(AppDbContext db, IPasswordHasher<Usuario> hasher, ICifradoService cifrado)
     {
         _db = db;
         _hasher = hasher;
+        _cifrado = cifrado;
     }
 
     public async Task<IEnumerable<UsuarioDto>> ListarAsync()
@@ -45,7 +48,10 @@ public class UsuarioService : IUsuarioService
         };
 
         usuario.PasswordHash = _hasher.HashPassword(usuario, dto.Password);
-        usuario.Telefono = dto.Telefono;
+        if (!string.IsNullOrWhiteSpace(dto.Telefono))
+        {
+            usuario.Telefono = _cifrado.Cifrar(dto.Telefono);
+        }
 
         _db.Usuarios.Add(usuario);
         await _db.SaveChangesAsync();
@@ -59,7 +65,7 @@ public class UsuarioService : IUsuarioService
             Id = u.Id,
             Nombre = u.Nombre,
             Email = u.Email,
-            Telefono = u.Telefono,
+            Telefono = u.Telefono is null ? null : _cifrado.Descifrar(u.Telefono),
             Rol = u.Rol,
             FechaCreacion = u.FechaCreacion
         };
