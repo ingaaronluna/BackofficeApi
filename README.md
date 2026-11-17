@@ -31,6 +31,7 @@ Instalar los paquetes
 ```
 dotnet add package Pomelo.EntityFrameworkCore.MySql --version 9.0.0
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 9.0.0
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 10.0.0
 dotnet build
 ```
 Guardar la cadena de conexión con Secret Manager
@@ -39,7 +40,7 @@ dotnet user-secrets init
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Port=3306;Database=backoffice_db;User=backoffice_user;Password=SU_CLAVE"
 dotnet user-secrets list
 ```
-### Generar la clave y guardarla en Secret Manager 
+### Generar la 1ra y 2da clave con los mismos passos y guardarla en Secret Manager 
 La clave debe ser de 32 bytes (256 bits), aleatoria, en Base64. Cada estudiante genera la suya.
 
 Windows (PowerShell):
@@ -53,7 +54,11 @@ macOS y Linux:
 openssl rand -base64 32
 ```
 
-Para guardar el secret correr `dotnet user-secrets set "Cifrado:Clave" "PEGA_AQUI_LA_CLAVE_32_bytes"`
+Para guardar el secret correr 
+```
+dotnet user-secrets set "Cifrado:Clave" "PEGA_AQUI_LA_PRIMERA_CLAVE"
+dotnet user-secrets set "Jwt:Clave" "PEGA_AQUI_LA_SEGUNDA_CLAVE"
+```
 
 ## Debemos crear la base de datos con EF
 
@@ -88,3 +93,12 @@ dotnet user-secrets remove "ConnectionStrings:DefaultConnection"
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Port=3306;Database=backoffice_db;User=backoffice_user;Password=TuClave"
 ```
 
+### JWT
+Y en `appsettings.json` agrega la sección con los valores no secretos:
+```
+"Jwt": {
+  "Emisor": "BackofficeApi",
+  "Audiencia": "BackofficeClientes",
+  "MinutosExpiracion": 30
+}
+```

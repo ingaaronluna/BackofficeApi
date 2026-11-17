@@ -1,11 +1,12 @@
 using BackofficeApi.Dtos;
 using BackofficeApi.Services;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 namespace BackofficeApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ProductosController : ControllerBase
 {
     private readonly IProductoService _service;
@@ -37,6 +38,7 @@ public class ProductosController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrador")]
     public async Task<ActionResult<ProductoDto>> Crear(ProductoCrearDto dto)
     {
         var creado = await _service.CrearAsync(dto);

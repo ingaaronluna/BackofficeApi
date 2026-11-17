@@ -1,11 +1,12 @@
 using BackofficeApi.Dtos;
 using BackofficeApi.Services;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 namespace BackofficeApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CategoriasController : ControllerBase
 {
     private readonly ICategoriaService _service;
@@ -29,6 +30,7 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrador")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CategoriaDto>> Crear(CategoriaCrearDto dto)
@@ -38,6 +40,7 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Actualizar(int id, CategoriaCrearDto dto)
     {
         var actualizada = await _service.ActualizarAsync(id, dto);
@@ -45,6 +48,7 @@ public class CategoriasController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Eliminar(int id)
     {
         var resultado = await _service.EliminarAsync(id);
